@@ -17,7 +17,7 @@ Node.js 需要 `v14` 版本以上
 ## 使用
 
 ```typescript
-import { ElasticSearchDbFactory } from 'lite-ts-mongo';
+import { MongoDbFactory } from 'lite-ts-mongo';
 
 class TestModel {
     public id: string;
@@ -25,9 +25,7 @@ class TestModel {
 }
 
 async function main() {
-    const dbFactory = new MongoDbFactory({
-        node: 'http://localhost:9200'
-    }, 'project-name');
+    const dbFactory = new MongoDbFactory(false, 'project-name', 'mongodb://localhost:27017');
 
     // 添加数据
     await dbFactory.db(TestModel).add({
@@ -49,11 +47,7 @@ async function main() {
     // 查询数据
     await dbFactory.db(TestModel).query().toArray({
         where: {
-            query: {
-                match: {
-                    name: 'name'
-                }
-            }
+            name: 'name 1'
         },
         order: ['id'], // 根据 id 正序
         orderByDesc: ['id'], // 根据 id 倒序
