@@ -1,14 +1,14 @@
 import { BulkWriteOptions } from 'mongodb';
 
 import { IDbFactory } from './i-db-factory';
-import { MongoDbRepository } from './db-repository';
-import { MongoDefaultUnitOfWork } from './default-unit-of-work';
-import { MongoDistributedUnitOfWork } from './distributed-unit-of-work';
-import { MongoPool } from './pool';
-import { MongoUnitOfWorkBase } from './unit-of-work-base';
+import { DbPool } from './db-pool';
+import { DbRepository } from './db-repository';
+import { DefaultUnitOfWork } from './default-unit-of-work';
+import { DistributedUnitOfWork } from './distributed-unit-of-work';
+import { UnitOfWorkBase } from './unit-of-work-base';
 
 export class MongoDbFactory implements IDbFactory {
-    private m_Pool: MongoPool;
+    private m_Pool: DbPool;
 
     public constructor(
         private m_IsDistributed: boolean,
@@ -16,15 +16,15 @@ export class MongoDbFactory implements IDbFactory {
         url: string,
         private m_BlukWriteOptions?: BulkWriteOptions,
     ) {
-        this.m_Pool = new MongoPool(name, url);
+        this.m_Pool = new DbPool(name, url);
     }
 
-    public db<T>(model: new () => T, uow?: MongoUnitOfWorkBase) {
-        return new MongoDbRepository<T>(this.m_Pool, uow, this, model);
+    public db<T>(model: new () => T, uow?: UnitOfWorkBase) {
+        return new DbRepository<T>(this.m_Pool, uow, this, model);
     }
 
     public uow() {
-        const ctor = this.m_IsDistributed ? MongoDistributedUnitOfWork : MongoDefaultUnitOfWork;
+        const ctor = this.m_IsDistributed ? DistributedUnitOfWork : DefaultUnitOfWork;
         return new ctor(this.m_BlukWriteOptions, this.m_Pool);
     }
 }

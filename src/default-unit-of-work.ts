@@ -1,8 +1,8 @@
 import { AnyBulkWriteOperation, ClientSession } from 'mongodb';
 
-import { MongoUnitOfWorkBase } from './unit-of-work-base';
+import { UnitOfWorkBase } from './unit-of-work-base';
 
-export class MongoDefaultUnitOfWork extends MongoUnitOfWorkBase {
+export class DefaultUnitOfWork extends UnitOfWorkBase {
     protected async commitWithSession(session: ClientSession, bulks: [string, AnyBulkWriteOperation[]][]) {
         const db = await this.pool.db;
         for (const r of bulks) {

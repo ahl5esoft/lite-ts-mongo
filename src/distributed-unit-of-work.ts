@@ -1,8 +1,8 @@
 import { AnyBulkWriteOperation, ClientSession, ReadPreference } from 'mongodb';
 
-import { MongoUnitOfWorkBase } from './unit-of-work-base';
+import { UnitOfWorkBase } from './unit-of-work-base';
 
-export class MongoDistributedUnitOfWork extends MongoUnitOfWorkBase {
+export class DistributedUnitOfWork extends UnitOfWorkBase {
     protected async commitWithSession(session: ClientSession, bulks: [string, AnyBulkWriteOperation[]][]) {
         try {
             session.startTransaction({

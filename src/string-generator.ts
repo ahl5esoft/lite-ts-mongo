@@ -9,7 +9,7 @@ export class MongoStringGenerator implements IStringGenerator {
     /**
      * 生成ID
      */
-    public async generate(): Promise<string> {
+    public async generate() {
         return new ObjectId().toHexString();
     }
 }

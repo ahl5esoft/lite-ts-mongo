@@ -2,13 +2,13 @@ import { deepStrictEqual, strictEqual } from 'assert';
 import { Mock } from 'lite-ts-mock';
 import { Collection, Db, FindCursor } from 'mongodb';
 
-import { Config } from './config';
 import { MongoDbQuery as Self } from './db-query';
-// import { IDbFactory } from './i-db-factory';
-// import { IDbQuery } from './i-db-query';
-// import { IDbRepository } from './i-db-repository';
-// import { IRedis } from './i-redis';
-import { MongoPool } from './pool';
+import { MongoPool } from './db-pool';
+
+class Config {
+    public id: string;
+    public items: any;
+}
 
 describe('src/db-query.ts', () => {
     describe('.count(where?: Filter<any>)', () => {

@@ -1,13 +1,13 @@
 import { AnyBulkWriteOperation, BulkWriteOptions, ClientSession } from 'mongodb';
 
+import { DbPool } from './db-pool';
 import { toDoc } from './helper';
 import { IUnitOfWork } from './i-unit-of-work';
-import { MongoPool } from './pool';
 
 /**
  * 工作单元仓储
  */
-export abstract class MongoUnitOfWorkBase implements IUnitOfWork {
+export abstract class UnitOfWorkBase implements IUnitOfWork {
     /**
      * 提交后函数
      */
@@ -17,7 +17,7 @@ export abstract class MongoUnitOfWorkBase implements IUnitOfWork {
 
     public constructor(
         protected blukWriteOptions: BulkWriteOptions,
-        protected pool: MongoPool,
+        protected pool: DbPool,
     ) { }
 
     /**

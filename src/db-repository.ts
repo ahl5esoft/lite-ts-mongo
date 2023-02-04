@@ -1,15 +1,12 @@
-import { MongoDbQuery } from './db-query';
+import { DbPool } from './db-pool';
+import { DbQuery } from './db-query';
 import { IDbFactory } from './i-db-factory';
 import { IDbRepository } from './i-db-repository';
-import { MongoPool } from './pool';
-import { MongoUnitOfWorkBase } from './unit-of-work-base';
+import { UnitOfWorkBase } from './unit-of-work-base';
 
 type regiterAction = (model: Function, entry: any) => void;
 
-/**
- * mongo文档数据仓储
- */
-export class MongoDbRepository<T> implements IDbRepository<T> {
+export class DbRepository<T> implements IDbRepository<T> {
     /**
      * 是否有事务
      */
@@ -20,7 +17,7 @@ export class MongoDbRepository<T> implements IDbRepository<T> {
      */
     protected get uow() {
         if (!this.m_Uow) {
-            this.m_Uow = this.m_DbFactory.uow() as MongoUnitOfWorkBase;
+            this.m_Uow = this.m_DbFactory.uow() as UnitOfWorkBase;
             this.m_IsTx = false;
         }
 
@@ -36,8 +33,8 @@ export class MongoDbRepository<T> implements IDbRepository<T> {
      * @param m_Model 模型
      */
     public constructor(
-        private m_Pool: MongoPool,
-        private m_Uow: MongoUnitOfWorkBase,
+        private m_Pool: DbPool,
+        private m_Uow: UnitOfWorkBase,
         private m_DbFactory: IDbFactory,
         private m_Model: new () => T,
     ) { }
@@ -55,7 +52,7 @@ export class MongoDbRepository<T> implements IDbRepository<T> {
      * 创建表查询对象
      */
     public query() {
-        return new MongoDbQuery<T>(this.m_Pool, this.m_Model.name);
+        return new DbQuery<T>(this.m_Pool, this.m_Model.name);
     }
 
     /**

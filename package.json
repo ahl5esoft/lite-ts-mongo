@@ -22,7 +22,7 @@
     ],
     "license": "GPL-3.0",
     "main": "./dist/index.js",
-    "name": "lite-ts-es",
+    "name": "lite-ts-mongo",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/ahl5esoft/lite-ts-mongo.git"

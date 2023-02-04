@@ -1,13 +1,12 @@
 import { Filter } from 'mongodb';
 
+import { DbPool } from './db-pool';
 import { toEntries } from './helper';
-import { IDbQueryOption } from './i-db-query-option';
-import { IDbQuery } from './i-db-query';
-import { MongoPool } from './pool';
+import { IDbQuery, IDbQueryOption } from './i-db-query';
 
-export class MongoDbQuery<T> implements IDbQuery<T> {
+export class DbQuery<T> implements IDbQuery<T> {
     public constructor(
-        private m_Pool: MongoPool,
+        private m_Pool: DbPool,
         private m_Table: string
     ) { }
 
