@@ -1,12 +1,6 @@
-export interface IDbQueryOption<T> {
-    skip: number;
-    take: number;
-    where: T;
-    order: string[];
-    orderByDesc: string[];
-}
+import { DbQueryOption } from './db-query-option';
 
 export interface IDbQuery<T> {
     count(where?: any): Promise<number>;
-    toArray(v?: Partial<IDbQueryOption<any>>): Promise<T[]>;
+    toArray(v?: DbQueryOption<any>): Promise<T[]>;
 }

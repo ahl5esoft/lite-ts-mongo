@@ -3,8 +3,8 @@ import { BulkWriteOptions } from 'mongodb';
 import { IDbFactory } from './i-db-factory';
 import { DbPool } from './db-pool';
 import { DbRepository } from './db-repository';
-import { DefaultUnitOfWork } from './default-unit-of-work';
 import { DistributedUnitOfWork } from './distributed-unit-of-work';
+import { UnitOfWork } from './unit-of-work';
 import { UnitOfWorkBase } from './unit-of-work-base';
 
 export class MongoDbFactory implements IDbFactory {
@@ -24,7 +24,7 @@ export class MongoDbFactory implements IDbFactory {
     }
 
     public uow() {
-        const ctor = this.m_IsDistributed ? DistributedUnitOfWork : DefaultUnitOfWork;
+        const ctor = this.m_IsDistributed ? DistributedUnitOfWork : UnitOfWork;
         return new ctor(this.m_BlukWriteOptions, this.m_Pool);
     }
 }

@@ -9,12 +9,15 @@ export class DbPool {
 
     private m_Db: Promise<Db>;
     public get db() {
-        this.m_Db ??= new Promise<Db>((s, f) => {
-            this.client.then(res => {
+        this.m_Db ??= new Promise<Db>(async (s, f) => {
+            try {
+                const client = await this.client;
                 s(
-                    res.db(this.m_Name)
+                    client.db(this.m_Name)
                 );
-            }, f);
+            } catch (ex) {
+                f(ex);
+            }
         })
         return this.m_Db;
     }

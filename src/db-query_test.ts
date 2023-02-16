@@ -2,8 +2,8 @@ import { deepStrictEqual, strictEqual } from 'assert';
 import { Mock } from 'lite-ts-mock';
 import { Collection, Db, FindCursor } from 'mongodb';
 
-import { MongoDbQuery as Self } from './db-query';
-import { MongoPool } from './db-pool';
+import { DbPool } from './db-pool';
+import { DbQuery as Self } from './db-query';
 
 class Config {
     public id: string;
@@ -14,7 +14,7 @@ describe('src/db-query.ts', () => {
     describe('.count(where?: Filter<any>)', () => {
         it('ok', async () => {
             const dbMock = new Mock<Db>();
-            const mongoPoolMock = new Mock<MongoPool>({
+            const mongoPoolMock = new Mock<DbPool>({
                 get db() {
                     return dbMock.actual;
                 }
@@ -40,7 +40,7 @@ describe('src/db-query.ts', () => {
     describe('.toArray(v?: Partial<IDbQueryOption<Filter<any>>>)', () => {
         it('ok', async () => {
             const dbMock = new Mock<Db>();
-            const mongoPoolMock = new Mock<MongoPool>({
+            const mongoPoolMock = new Mock<DbPool>({
                 get db() {
                     return dbMock.actual;
                 }
