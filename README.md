@@ -15,7 +15,7 @@ Node.js 需要 `v14` 版本以上
 ## 使用
 
 ```typescript
-import { MongoDbFactory } from 'lite-ts-mongo';
+import { MongoDbFactory, modelDbOption } from 'lite-ts-mongo';
 
 class TestModel {
     public id: string;
@@ -26,24 +26,24 @@ async function main() {
     const dbFactory = new MongoDbFactory(false, 'project-name', 'mongodb://localhost:27017');
 
     // 添加数据
-    await dbFactory.db(TestModel).add({
+    await dbFactory.db<TestModel>(modelDbOption(TestModel)).add({
         id: 'id-1',
         name: 'name 1'
     });
 
     // 更新数据
-    await dbFactory.db(TestModel).save({
+    await dbFactory.db<TestModel>(modelDbOption(TestModel)).save({
         id: 'id-1',
         name: 'name 1 save'
     });
 
     // 删除数据
-    await dbFactory.db(TestModel).remove({
+    await dbFactory.db<TestModel>(modelDbOption(TestModel)).remove({
         id: 'id-1',
     } as TestModel);
 
     // 查询数据
-    await dbFactory.db(TestModel).query().toArray({
+    await dbFactory.db<TestModel>(modelDbOption(TestModel)).query().toArray({
         where: {
             name: 'name 1'
         },

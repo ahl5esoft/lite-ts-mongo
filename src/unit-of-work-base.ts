@@ -1,8 +1,8 @@
+import { IUnitOfWork } from 'lite-ts-db';
 import { AnyBulkWriteOperation, BulkWriteOptions, ClientSession } from 'mongodb';
 
 import { DbPool } from './db-pool';
 import { toDoc } from './helper';
-import { IUnitOfWork } from './i-unit-of-work';
 
 /**
  * 工作单元仓储
