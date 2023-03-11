@@ -7,7 +7,7 @@ import { DistributedUnitOfWork } from './distributed-unit-of-work';
 import { UnitOfWork } from './unit-of-work';
 
 export class MongoDbFactory extends DbFactoryBase {
-    private m_Pool: DbPool;
+    public pool: DbPool;
 
     public constructor(
         private m_IsDistributed: boolean,
@@ -17,11 +17,11 @@ export class MongoDbFactory extends DbFactoryBase {
     ) {
         super();
 
-        this.m_Pool = new DbPool(name, url);
+        this.pool = new DbPool(name, url);
     }
 
     public db<T extends DbModel>(...dbOptions: DbOption[]) {
-        const dbRepository = new DbRepository<T>(this.m_Pool, this.uow());
+        const dbRepository = new DbRepository<T>(this, dbOptions, this.uow());
         for (const r of dbOptions)
             r(dbRepository);
 
@@ -30,6 +30,6 @@ export class MongoDbFactory extends DbFactoryBase {
 
     public uow() {
         const ctor = this.m_IsDistributed ? DistributedUnitOfWork : UnitOfWork;
-        return new ctor(this.m_BlukWriteOptions, this.m_Pool);
+        return new ctor(this.m_BlukWriteOptions, this.pool);
     }
 }

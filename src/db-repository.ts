@@ -1,10 +1,18 @@
-import { DbOption, IDbRepository, IUnitOfWork } from 'lite-ts-db';
+import { DbFactoryBase, DbModel, DbOption, IDbRepository, IUnitOfWork } from 'lite-ts-db';
 
-import { DbPool } from './db-pool';
+import { MongoAreaDbFactory } from './area-db-factory';
+import { AreaDbQuery } from './area-db-query';
+import { MongoDbFactory } from './db-factory';
 import { DbQuery } from './db-query';
-import { UnitOfWorkBase } from './unit-of-work-base';
+import { IUnitOfWorkRepository } from './i-unit-of-work-repository';
 
 type regiterAction = (model: Function, entry: any) => void;
+
+export function areaDbOption(areaNo: number): DbOption {
+    return dbRepo => {
+        (dbRepo as DbRepository<any>).areaNo = areaNo;
+    };
+}
 
 export function modelDbOption(model: Function): DbOption {
     return dbRepo => {
@@ -14,16 +22,24 @@ export function modelDbOption(model: Function): DbOption {
 
 export function uowDbOption(uow: IUnitOfWork): DbOption {
     return dbRepo => {
-        (dbRepo as DbRepository<any>).uow = uow as UnitOfWorkBase;
+        (dbRepo as DbRepository<any>).uow = uow as any as IUnitOfWorkRepository;
     };
 }
 
-export class DbRepository<T> implements IDbRepository<T> {
+export class DbRepository<T extends DbModel> implements IDbRepository<T> {
+    /**
+     * 区服
+     */
+    private m_AreaNo: number;
+    public set areaNo(v: number) {
+        this.m_AreaNo = v;
+    }
+
     /**
      * 是否有事务
      */
     private m_IsTx = false;
-    public set uow(v: UnitOfWorkBase) {
+    public set uow(v: IUnitOfWorkRepository) {
         this.m_IsTx = true;
         this.m_Uow = v;
     }
@@ -41,12 +57,11 @@ export class DbRepository<T> implements IDbRepository<T> {
      * 
      * @param m_Pool 数据池
      * @param m_Uow 工作单元仓储
-     * @param m_DbFactory 数据库工厂
-     * @param m_Model 模型
      */
     public constructor(
-        private m_Pool: DbPool,
-        private m_Uow: UnitOfWorkBase,
+        private m_DbFactory: DbFactoryBase,
+        private m_DbOptions: DbOption[],
+        private m_Uow: IUnitOfWorkRepository,
     ) { }
 
     /**
@@ -62,7 +77,19 @@ export class DbRepository<T> implements IDbRepository<T> {
      * 创建表查询对象
      */
     public query() {
-        return new DbQuery<T>(this.m_Pool, this.m_Model.name);
+        const dbFactory = this.m_DbFactory as MongoAreaDbFactory;
+        if (this.m_AreaNo && dbFactory.getAreaDbFactory) {
+            return new AreaDbQuery<T>(
+                this.m_AreaNo,
+                dbFactory,
+                this.m_DbOptions
+            );
+        }
+
+        return new DbQuery<T>(
+            (this.m_DbFactory as MongoDbFactory).pool,
+            this.m_Model.name
+        );
     }
 
     /**
@@ -90,6 +117,12 @@ export class DbRepository<T> implements IDbRepository<T> {
      * @param entry 实体
      */
     private async exec(action: regiterAction, entry: any) {
+        if (this.m_AreaNo) {
+            entry = {
+                entry: entry,
+                areaNo: this.m_AreaNo
+            };
+        }
         action.bind(this.m_Uow)(this.m_Model, entry);
         if (this.m_IsTx)
             return;

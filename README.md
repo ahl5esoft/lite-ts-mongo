@@ -54,3 +54,42 @@ async function main() {
     });
 }
 ```
+
+### 多区服使用
+```typescript
+import { MongoAreaDbFactory, MongoDbFactory, modelDbOption, areaDbOption, AreaData } from 'lite-ts-mongo';
+import { DbModel } from 'lite-ts-db';
+
+class TestModel extends DbModel {}
+
+async function main() {
+    const globalDbFactory = new MongoDbFactory(false, 'project-name', 'mongodb://localhost:27017');
+
+    const enumFactory = {
+        build(ctor: new () => AreaData) {
+            return {
+                items() {
+                    return Promise.resolve([
+                        {
+                            value: 1,
+                            connectionString: {
+                                'project-name': 'mongodb://10.10.0.66:27017'
+                            }
+                        }
+                    ]);
+                }
+            };
+        }
+    };
+    const dbFactory = new MongoAreaDbFactory(globalDbFactory, enumFactory, 'project-name');
+
+    const db = dbFactory.db<TestModel>(modelDbOption(TestModel), areaDbOption(1));
+    await db.add({
+        id: '1'
+    });
+
+    await db.remove({
+        id: '1'
+    } as any);
+}
+```

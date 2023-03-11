@@ -1,13 +1,13 @@
-import { IUnitOfWork } from 'lite-ts-db';
 import { AnyBulkWriteOperation, BulkWriteOptions, ClientSession } from 'mongodb';
 
 import { DbPool } from './db-pool';
 import { toDoc } from './helper';
+import { IUnitOfWorkRepository } from './i-unit-of-work-repository';
 
 /**
  * 工作单元仓储
  */
-export abstract class UnitOfWorkBase implements IUnitOfWork {
+export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
     /**
      * 提交后函数
      */
