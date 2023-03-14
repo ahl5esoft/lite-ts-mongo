@@ -1,20 +1,18 @@
 import { deepStrictEqual } from 'assert';
-import { Mock } from 'lite-ts-mock';
+import { DbFactoryBase, IDbQuery, IDbRepository } from 'lite-ts-db';
+import { Mock, mockAny } from 'lite-ts-mock';
 
-import { IDbFactory } from './i-db-factory';
-import { IDbQuery } from './i-db-query';
-import { IDbRepository } from './i-db-repository';
 import { Enum, LoadMongoEnumHandler as Self } from './load-enum-handler';
 
 describe('src/load-enum-handler.ts', () => {
     describe('.handle(enumerator: Enumerator<any>, res: { [no: number]: any; })', () => {
         it('ok', async () => {
-            const mockDbFactory = new Mock<IDbFactory>();
+            const mockDbFactory = new Mock<DbFactoryBase>();
             const self = new Self(mockDbFactory.actual);
 
             const mockDbRepo = new Mock<IDbRepository<Enum>>();
             mockDbFactory.expectReturn(
-                r => r.db(Enum),
+                r => r.db(mockAny),
                 mockDbRepo.actual
             );
 
