@@ -9,7 +9,7 @@ export function modelDbOption(model: any): DbOption {
     return (dbFactory, dbRepo_) => {
         const dbRepo = dbRepo_ as DbRepository<any>;
         dbRepo.model = typeof model == 'string' ? model : model.ctor ?? model.name;
-        dbRepo.createQueryFunc = () => {
+        dbRepo.createQueryFunc(() => {
             const mongoAreaDbFactory = dbFactory as MongoAreaDbFactory;
             if (dbRepo.areaNo && mongoAreaDbFactory.getAreaDbFactory) {
                 return new AreaDbQuery(
@@ -23,6 +23,6 @@ export function modelDbOption(model: any): DbOption {
                 (dbFactory as MongoDbFactory).pool,
                 dbRepo.model
             );
-        };
+        });
     };
 }
