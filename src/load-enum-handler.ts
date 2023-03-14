@@ -1,7 +1,7 @@
 import { DbFactoryBase } from 'lite-ts-db';
 import { Enum as Enumerator, EnumItem, LoadHandlerBase } from 'lite-ts-enum';
 
-import { modelDbOption } from './db-repository';
+import { modelDbOption } from './model-db-option';
 
 export class Enum {
     public id: string;

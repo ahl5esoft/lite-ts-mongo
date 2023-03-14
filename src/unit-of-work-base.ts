@@ -1,8 +1,8 @@
+import { IUnitOfWorkRepository } from 'lite-ts-db';
 import { AnyBulkWriteOperation, BulkWriteOptions, ClientSession } from 'mongodb';
 
 import { DbPool } from './db-pool';
 import { toDoc } from './helper';
-import { IUnitOfWorkRepository } from './i-unit-of-work-repository';
 
 /**
  * 工作单元仓储
@@ -49,9 +49,9 @@ export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
         }
     }
 
-    public registerAdd(model: Function, entry: any) {
-        this.m_Bulk[model.name] ??= [];
-        this.m_Bulk[model.name].push({
+    public registerAdd(model: string, entry: any) {
+        this.m_Bulk[model] ??= [];
+        this.m_Bulk[model].push({
             insertOne: {
                 document: toDoc(entry)
             }
@@ -69,9 +69,9 @@ export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
         this.m_AfterAction[key] = action;
     }
 
-    public registerRemove(model: Function, entry: any) {
-        this.m_Bulk[model.name] ??= [];
-        this.m_Bulk[model.name].push({
+    public registerRemove(model: string, entry: any) {
+        this.m_Bulk[model] ??= [];
+        this.m_Bulk[model].push({
             deleteOne: {
                 filter: {
                     _id: entry.id,
@@ -80,18 +80,18 @@ export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
         });
     }
 
-    public registerSave(model: Function, entry: any) {
-        this.m_Bulk[model.name] ??= [];
+    public registerSave(model: string, entry: any) {
+        this.m_Bulk[model] ??= [];
 
         const doc = toDoc(entry);
-        const index = this.m_Bulk[model.name].findIndex(r => {
+        const index = this.m_Bulk[model].findIndex(r => {
             return (r as any).updateOne?.filter?._id == doc._id;
         });
         if (index != -1)
-            this.m_Bulk[model.name].splice(index, 1);
+            this.m_Bulk[model].splice(index, 1);
 
         delete doc._id;
-        this.m_Bulk[model.name].push({
+        this.m_Bulk[model].push({
             updateOne: {
                 filter: {
                     _id: entry.id,

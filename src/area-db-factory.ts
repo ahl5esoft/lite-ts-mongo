@@ -1,15 +1,14 @@
-import { DbFactoryBase, DbOption, DbModel } from 'lite-ts-db';
+import { DbFactoryBase, DbOption, DbModel, DbRepository } from 'lite-ts-db';
 import { EnumFactoryBase } from 'lite-ts-enum';
 
 import { AreaData } from './area-data';
 import { AreaUnitOfWork } from './area-unit-of-work';
 import { MongoDbFactory } from './db-factory';
-import { DbRepository } from './db-repository';
 
 export class MongoAreaDbFactory extends DbFactoryBase {
-    private m_AllDbFactory: {
+    private m_AllDbFactory: Promise<{
         [areaNo: number]: DbFactoryBase;
-    };
+    }>;
 
     public constructor(
         private m_GlobalDbFactory: DbFactoryBase,
@@ -21,12 +20,12 @@ export class MongoAreaDbFactory extends DbFactoryBase {
 
     public db<T extends DbModel>(...dbOptions: DbOption[]) {
         const dbRepository = new DbRepository<T>(
-            this,
-            dbOptions,
             this.uow(),
         );
+        dbRepository.dbOptions = dbOptions;
+
         for (const r of dbOptions)
-            r(dbRepository);
+            r(this, dbRepository);
 
         return dbRepository;
     }
@@ -36,19 +35,28 @@ export class MongoAreaDbFactory extends DbFactoryBase {
     }
 
     public async getAreaDbFactory(areaNo: number) {
-        if (!this.m_AllDbFactory) {
-            const items = await this.m_EnumFactory.build<AreaData>(AreaData).items;
-            this.m_AllDbFactory = items.reduce((memo, r) => {
-                if (r.connectionString[this.m_Name])
-                    memo[r.value] = new MongoDbFactory(false, this.m_Name, r.connectionString[this.m_Name]);
+        this.m_AllDbFactory ??= new Promise<{
+            [areaNo: number]: DbFactoryBase;
+        }>(async (s, f) => {
+            try {
+                const items = await this.m_EnumFactory.build<AreaData>(AreaData).items;
+                s(
+                    items.reduce((memo, r) => {
+                        if (r.connectionString[this.m_Name])
+                            memo[r.value] = new MongoDbFactory(false, this.m_Name, r.connectionString[this.m_Name]);
 
-                return memo;
-            }, {});
-        }
+                        return memo;
+                    }, {})
+                );
+            } catch (ex) {
+                f(ex);
+            }
+        });
 
-        if (!this.m_AllDbFactory[areaNo])
+        const allDbFactory = await this.m_AllDbFactory;
+        if (!allDbFactory[areaNo])
             throw new Error(`缺少区服配置 ${areaNo}[${this.m_Name}]`);
 
-        return this.m_AllDbFactory[areaNo];
+        return allDbFactory[areaNo];
     }
 }

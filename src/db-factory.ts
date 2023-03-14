@@ -1,8 +1,7 @@
-import { DbFactoryBase, DbOption, DbModel } from 'lite-ts-db';
+import { DbFactoryBase, DbOption, DbModel, DbRepository } from 'lite-ts-db';
 import { BulkWriteOptions } from 'mongodb';
 
 import { DbPool } from './db-pool';
-import { DbRepository } from './db-repository';
 import { DistributedUnitOfWork } from './distributed-unit-of-work';
 import { UnitOfWork } from './unit-of-work';
 
@@ -21,9 +20,11 @@ export class MongoDbFactory extends DbFactoryBase {
     }
 
     public db<T extends DbModel>(...dbOptions: DbOption[]) {
-        const dbRepository = new DbRepository<T>(this, dbOptions, this.uow());
+        const dbRepository = new DbRepository<T>(this.uow());
+        dbRepository.dbOptions = dbOptions;
+
         for (const r of dbOptions)
-            r(dbRepository);
+            r(this, dbRepository);
 
         return dbRepository;
     }
