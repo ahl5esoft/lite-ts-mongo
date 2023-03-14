@@ -1,11 +1,9 @@
 import { notStrictEqual, strictEqual } from 'assert';
-import { DbFactoryBase, DbModel } from 'lite-ts-db';
+import { AreaDbModel, DbFactoryBase, DbModel, IUnitOfWorkRepository } from 'lite-ts-db';
 import { Mock, mockAny } from 'lite-ts-mock';
 
 import { MongoAreaDbFactory } from './area-db-factory';
-import { AreaDbModel } from './area-db-model';
 import { AreaUnitOfWork as Self } from './area-unit-of-work';
-import { IUnitOfWorkRepository } from './i-unit-of-work-repository';
 
 class TestModel extends DbModel { }
 
@@ -20,12 +18,12 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
 
             const self = new Self(areaDbFactoryMock.actual, globalDbFactoryMock.actual);
-            self.registerAdd(TestModel, new AreaDbModel({
+            self.registerAdd(TestModel.name, {
                 entry: {
                     id: '1',
                 },
                 areaNo: 1
-            } as any));
+            } as AreaDbModel);
 
             const dbFactoryMock = new Mock<DbFactoryBase>();
             areaDbFactoryMock.expectReturn(
@@ -45,7 +43,7 @@ describe('src/area-unit-of-work.ts', () => {
             );
 
             uowMock.expectReturn(
-                r => r.registerAdd(TestModel, mockAny),
+                r => r.registerAdd(TestModel.name, mockAny),
                 null,
             );
 
@@ -61,7 +59,7 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerAdd(TestModel, {
+            self.registerAdd(TestModel.name, {
                 entry: {
                     id: '1',
                 },
@@ -96,7 +94,7 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerRemove(TestModel, {
+            self.registerRemove(TestModel.name, {
                 entry: {
                     id: '1',
                 },
@@ -115,7 +113,7 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerSave(TestModel, {
+            self.registerSave(TestModel.name, {
                 entry: {
                     id: '1',
                 },

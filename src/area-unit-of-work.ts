@@ -1,8 +1,6 @@
-import { DbFactoryBase } from 'lite-ts-db';
+import { AreaDbModel, DbFactoryBase, IUnitOfWorkRepository } from 'lite-ts-db';
 
 import { MongoAreaDbFactory } from './area-db-factory';
-import { AreaDbModel } from './area-db-model';
-import { IUnitOfWorkRepository } from './i-unit-of-work-repository';
 
 type opAction = (uow: IUnitOfWorkRepository) => void;
 
@@ -48,7 +46,7 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
         }
     }
 
-    public registerAdd(model: Function, entry: AreaDbModel) {
+    public registerAdd(model: string, entry: AreaDbModel) {
         this.m_Bulk[entry.areaNo] ??= [];
         this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
             uow.registerAdd(model, entry.entry);
@@ -66,14 +64,14 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
         this.m_AfterAction[key] = action;
     }
 
-    public registerRemove(model: Function, entry: AreaDbModel) {
+    public registerRemove(model: string, entry: AreaDbModel) {
         this.m_Bulk[entry.areaNo] ??= [];
         this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
             uow.registerRemove(model, entry.entry);
         });
     }
 
-    public registerSave(model: Function, entry: AreaDbModel) {
+    public registerSave(model: string, entry: AreaDbModel) {
         this.m_Bulk[entry.areaNo] ??= [];
         this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
             uow.registerSave(model, entry.entry);

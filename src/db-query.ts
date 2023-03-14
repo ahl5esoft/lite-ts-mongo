@@ -1,4 +1,4 @@
-import { IDbQuery, IDbQueryOption } from 'lite-ts-db';
+import { IDbQuery, DbQueryOption } from 'lite-ts-db';
 import { Filter } from 'mongodb';
 
 import { DbPool } from './db-pool';
@@ -17,7 +17,7 @@ export class DbQuery<T> implements IDbQuery<T> {
         return db.collection(this.m_Table).count(where);
     }
 
-    public async toArray(v?: IDbQueryOption<Filter<any>>) {
+    public async toArray(v?: DbQueryOption<Filter<any>>) {
         this.setID(v?.where);
 
         const db = await this.m_Pool.db;
