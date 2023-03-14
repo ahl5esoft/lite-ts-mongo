@@ -26,12 +26,9 @@ export class LoadMongoEnumHandler extends LoadEnumHandlerBase {
         if (!entries.length)
             return;
 
-        Object.keys(opt.res).forEach(r => {
-            delete opt.res[r];
-        });
-
-        entries[0].items.forEach(r => {
-            opt.res[r.value] = r;
-        });
+        opt.res = entries[0].items.reduce((memo, r) => {
+            memo[r.value] = r;
+            return memo;
+        }, {});
     }
 }
