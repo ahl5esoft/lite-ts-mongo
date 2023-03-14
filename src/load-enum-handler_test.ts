@@ -36,11 +36,16 @@ describe('src/load-enum-handler.ts', () => {
                 } as Enum]
             );
 
-            const res = { a: 1 };
-            await self.handle({
-                name: 'tt'
-            } as any, res);
-            deepStrictEqual(res, {
+            const opt = {
+                enum: {
+                    name: 'tt'
+                } as any,
+                res: {
+                    a: 1
+                }
+            };
+            await self.handle(opt);
+            deepStrictEqual(opt.res, {
                 2: {
                     value: 2
                 }

@@ -5,7 +5,7 @@
     },
     "dependencies": {
         "lite-ts-db": "^1.6.0",
-        "lite-ts-enum": "^1.1.0",
+        "lite-ts-enum": "^1.2.0",
         "mongodb": "^4.8.1"
     },
     "devDependencies": {

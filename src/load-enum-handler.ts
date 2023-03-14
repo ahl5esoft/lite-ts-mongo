@@ -1,5 +1,5 @@
 import { DbFactoryBase } from 'lite-ts-db';
-import { Enum as Enumerator, EnumItem, LoadHandlerBase } from 'lite-ts-enum';
+import { EnumItem, LoadEnumHandleOption, LoadEnumHandlerBase } from 'lite-ts-enum';
 
 import { modelDbOption } from './model-db-option';
 
@@ -8,30 +8,30 @@ export class Enum {
     public items: EnumItem[];
 }
 
-export class LoadMongoEnumHandler extends LoadHandlerBase {
+export class LoadMongoEnumHandler extends LoadEnumHandlerBase {
     public constructor(
         private m_DbFactory: DbFactoryBase,
     ) {
         super();
     }
 
-    public async handle(enumerator: Enumerator<any>, res: { [no: number]: any; }) {
+    public async handle(opt: LoadEnumHandleOption) {
         const entries = await this.m_DbFactory.db<Enum>(
             modelDbOption(Enum)
         ).query().toArray({
             where: {
-                id: enumerator.name,
+                id: opt.enum.name,
             }
         });
         if (!entries.length)
             return;
 
-        Object.keys(res).forEach(r => {
-            delete res[r];
+        Object.keys(opt.res).forEach(r => {
+            delete opt.res[r];
         });
 
         entries[0].items.forEach(r => {
-            res[r.value] = r;
+            opt.res[r.value] = r;
         });
     }
 }
