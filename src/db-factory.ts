@@ -20,12 +20,11 @@ export class MongoDbFactory extends DbFactoryBase {
     }
 
     public db<T extends DbModel>(...dbOptions: DbOption[]) {
-        const dbRepository = new DbRepository<T>(this.uow());
-        dbRepository.dbOptions = dbOptions;
-
+        const dbRepository = new DbRepository<T>(
+            this.uow(),
+        );
         for (const r of dbOptions)
             r(this, dbRepository);
-
         return dbRepository;
     }
 
