@@ -3,10 +3,10 @@ import { DbFactoryBase, IDbQuery, IDbRepository } from 'lite-ts-db';
 import { Mock, mockAny } from 'lite-ts-mock';
 
 import { Enum } from './i-enum';
-import { LoadMongoEnumHandler as Self } from './load-enum-handler';
+import { LoadMongoAllEnumHandler as Self } from './load-all-enum-handler';
 
-describe('src/load-enum-handler.ts', () => {
-    describe('.handle(enumerator: Enumerator<any>, res: { [no: number]: any; })', () => {
+describe('src/load-all-enum-handler.ts', () => {
+    describe('.handle(opt: LoadEnumHandleOption)', () => {
         it('ok', async () => {
             const mockDbFactory = new Mock<DbFactoryBase>();
             const self = new Self(mockDbFactory.actual);
@@ -24,32 +24,33 @@ describe('src/load-enum-handler.ts', () => {
             );
 
             mockDbQuery.expectReturn(
-                r => r.toArray({
-                    where: {
-                        id: 'tt'
-                    }
-                }),
+                r => r.toArray(),
                 [{
-                    id: '',
+                    id: 'ValueTypeData',
                     items: [{
                         value: 2
                     }]
-                } as Enum]
+                },
+                {
+                    id: 'b',
+                    items: [{
+                        value: 0
+                    }]
+                }]
             );
 
             const opt = {
-                enum: {
-                    name: 'tt'
-                } as any,
-                res: {
-                    a: 1
-                }
+                enum: null,
+                res: {}
             };
             await self.handle(opt);
             deepStrictEqual(opt.res, {
-                2: {
+                'ValueTypeData': [{
                     value: 2
-                }
+                }],
+                'b': [{
+                    value: 0
+                }]
             });
         });
     });
