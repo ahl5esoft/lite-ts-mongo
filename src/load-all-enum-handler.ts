@@ -4,7 +4,7 @@ import { LoadEnumHandleOption, LoadEnumHandlerBase } from 'lite-ts-enum';
 import { Enum } from './i-enum';
 import { modelDbOption } from './model-db-option';
 
-export class LoadMongoEnumHandler extends LoadEnumHandlerBase {
+export class LoadMongoAllEnumHandler extends LoadEnumHandlerBase {
     public constructor(
         private m_DbFactory: DbFactoryBase,
     ) {
@@ -14,16 +14,12 @@ export class LoadMongoEnumHandler extends LoadEnumHandlerBase {
     public async handle(opt: LoadEnumHandleOption) {
         const entries = await this.m_DbFactory.db<Enum>(
             modelDbOption(Enum)
-        ).query().toArray({
-            where: {
-                id: opt.enum.name,
-            }
-        });
+        ).query().toArray();
         if (!entries.length)
             return;
 
-        opt.res = entries[0].items.reduce((memo, r) => {
-            memo[r.value] = r;
+        opt.res = entries.reduce((memo, r) => {
+            memo[r.id] = r.items;
             return memo;
         }, {});
     }
