@@ -45,12 +45,16 @@ describe('src/load-all-enum-handler.ts', () => {
             };
             await self.handle(opt);
             deepStrictEqual(opt.res, {
-                'ValueTypeData': [{
-                    value: 2
-                }],
-                'b': [{
-                    value: 0
-                }]
+                'ValueTypeData':{
+                    2: {
+                        value: 2
+                    }
+                },
+                'b': {
+                    0: {
+                        value: 0
+                    }
+                }
             });
         });
     });
