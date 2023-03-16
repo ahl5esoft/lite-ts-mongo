@@ -47,9 +47,10 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
     }
 
     public registerAdd(model: string, entry: AreaDbModel) {
+        entry.areaNo ??= 0;
         this.m_Bulk[entry.areaNo] ??= [];
         this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerAdd(model, entry.entry);
+            uow.registerAdd(model, entry.areaNo ? entry.entry : entry);
         });
     }
 
@@ -65,16 +66,18 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
     }
 
     public registerRemove(model: string, entry: AreaDbModel) {
+        entry.areaNo ??= 0;
         this.m_Bulk[entry.areaNo] ??= [];
         this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerRemove(model, entry.entry);
+            uow.registerRemove(model, entry.areaNo ? entry.entry : entry);
         });
     }
 
     public registerSave(model: string, entry: AreaDbModel) {
+        entry.areaNo ??= 0;
         this.m_Bulk[entry.areaNo] ??= [];
         this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerSave(model, entry.entry);
+            uow.registerSave(model, entry.areaNo ? entry.entry : entry);
         });
     }
 }

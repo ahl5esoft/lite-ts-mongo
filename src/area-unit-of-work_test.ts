@@ -70,6 +70,20 @@ describe('src/area-unit-of-work.ts', () => {
             notStrictEqual(bulks, undefined);
             strictEqual(bulks[1].length, 1);
         });
+
+        it('no areaNo', async () => {
+            const dbFactoryMock = new Mock<MongoAreaDbFactory>();
+            const globalDbFactoryMock = new Mock<DbFactoryBase>();
+            const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
+
+            self.registerAdd(TestModel.name, {
+                id: '1',
+            } as AreaDbModel);
+
+            const bulks = Reflect.get(self, 'm_Bulk');
+            notStrictEqual(bulks, undefined);
+            strictEqual(bulks[0].length, 1);
+        });
     });
 
     describe('.registerAfter(action: () => Promise<void>, key?: string)', () => {
@@ -105,6 +119,20 @@ describe('src/area-unit-of-work.ts', () => {
             notStrictEqual(bulks, undefined);
             strictEqual(bulks[1].length, 1);
         });
+
+        it('no areaNo', async () => {
+            const dbFactoryMock = new Mock<MongoAreaDbFactory>();
+            const globalDbFactoryMock = new Mock<DbFactoryBase>();
+            const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
+
+            self.registerRemove(TestModel.name, {
+                id: '1',
+            } as AreaDbModel);
+
+            const bulks = Reflect.get(self, 'm_Bulk');
+            notStrictEqual(bulks, undefined);
+            strictEqual(bulks[0].length, 1);
+        });
     });
 
     describe('.registerSave(model: Function, entry: AreaDbModel)', () => {
@@ -123,6 +151,20 @@ describe('src/area-unit-of-work.ts', () => {
             const bulks = Reflect.get(self, 'm_Bulk');
             notStrictEqual(bulks, undefined);
             strictEqual(bulks[1].length, 1);
+        });
+
+        it('no areaNo', async () => {
+            const dbFactoryMock = new Mock<MongoAreaDbFactory>();
+            const globalDbFactoryMock = new Mock<DbFactoryBase>();
+            const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
+
+            self.registerSave(TestModel.name, {
+                id: '1',
+            } as AreaDbModel);
+
+            const bulks = Reflect.get(self, 'm_Bulk');
+            notStrictEqual(bulks, undefined);
+            strictEqual(bulks[0].length, 1);
         });
     });
 });
