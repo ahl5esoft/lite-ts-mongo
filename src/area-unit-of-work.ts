@@ -47,10 +47,11 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
     }
 
     public registerAdd(model: string, entry: AreaDbModel) {
-        entry.areaNo ??= 0;
-        this.m_Bulk[entry.areaNo] ??= [];
-        this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerAdd(model, entry.areaNo ? entry.entry : entry);
+        const isArea = entry instanceof AreaDbModel;
+        const areaNo = isArea ? entry.areaNo : 0;
+        this.m_Bulk[areaNo] ??= [];
+        this.m_Bulk[areaNo].push((uow: IUnitOfWorkRepository) => {
+            uow.registerAdd(model, isArea ? entry.entry : entry);
         });
     }
 
@@ -66,18 +67,20 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
     }
 
     public registerRemove(model: string, entry: AreaDbModel) {
-        entry.areaNo ??= 0;
-        this.m_Bulk[entry.areaNo] ??= [];
-        this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerRemove(model, entry.areaNo ? entry.entry : entry);
+        const isArea = entry instanceof AreaDbModel;
+        const areaNo = isArea ? entry.areaNo : 0;
+        this.m_Bulk[areaNo] ??= [];
+        this.m_Bulk[areaNo].push((uow: IUnitOfWorkRepository) => {
+            uow.registerRemove(model, isArea ? entry.entry : entry);
         });
     }
 
     public registerSave(model: string, entry: AreaDbModel) {
-        entry.areaNo ??= 0;
-        this.m_Bulk[entry.areaNo] ??= [];
-        this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerSave(model, entry.areaNo ? entry.entry : entry);
+        const isArea = entry instanceof AreaDbModel;
+        const areaNo = isArea ? entry.areaNo : 0;
+        this.m_Bulk[areaNo] ??= [];
+        this.m_Bulk[areaNo].push((uow: IUnitOfWorkRepository) => {
+            uow.registerSave(model, isArea ? entry.entry : entry);
         });
     }
 }

@@ -18,12 +18,12 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
 
             const self = new Self(areaDbFactoryMock.actual, globalDbFactoryMock.actual);
-            self.registerAdd(TestModel.name, {
+            self.registerAdd(TestModel.name, Object.assign(new AreaDbModel(), {
                 entry: {
                     id: '1',
                 },
                 areaNo: 1
-            } as AreaDbModel);
+            }));
 
             const dbFactoryMock = new Mock<DbFactoryBase>();
             areaDbFactoryMock.expectReturn(
@@ -59,12 +59,12 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerAdd(TestModel.name, {
+            self.registerAdd(TestModel.name, Object.assign(new AreaDbModel(), {
                 entry: {
                     id: '1',
                 },
                 areaNo: 1
-            } as AreaDbModel);
+            }));
 
             const bulks = Reflect.get(self, 'm_Bulk');
             notStrictEqual(bulks, undefined);
@@ -108,12 +108,12 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerRemove(TestModel.name, {
+            self.registerRemove(TestModel.name, Object.assign(new AreaDbModel(), {
                 entry: {
                     id: '1',
                 },
                 areaNo: 1
-            } as AreaDbModel);
+            }));
 
             const bulks = Reflect.get(self, 'm_Bulk');
             notStrictEqual(bulks, undefined);
@@ -141,12 +141,12 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerSave(TestModel.name, {
+            self.registerSave(TestModel.name, Object.assign(new AreaDbModel(), {
                 entry: {
                     id: '1',
                 },
                 areaNo: 1
-            } as AreaDbModel);
+            }));
 
             const bulks = Reflect.get(self, 'm_Bulk');
             notStrictEqual(bulks, undefined);
