@@ -19,7 +19,10 @@ export class LoadMongoAllEnumHandler extends LoadEnumHandlerBase {
             return;
 
         opt.res = entries.reduce((memo, r) => {
-            memo[r.id] = r.items;
+            memo[r.id] = r.items.reduce((cmemo, cr) => {
+                cmemo[cr.value] = cr;
+                return cmemo;
+            }, {});
             return memo;
         }, {});
     }
