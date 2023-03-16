@@ -18,11 +18,8 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
 
             const self = new Self(areaDbFactoryMock.actual, globalDbFactoryMock.actual);
-            self.registerAdd(TestModel.name, Object.assign(new AreaDbModel(), {
-                entry: {
-                    id: '1',
-                },
-                areaNo: 1
+            self.registerAdd(TestModel.name, new AreaDbModel(1, {
+                id: '1',
             }));
 
             const dbFactoryMock = new Mock<DbFactoryBase>();
@@ -59,11 +56,8 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerAdd(TestModel.name, Object.assign(new AreaDbModel(), {
-                entry: {
-                    id: '1',
-                },
-                areaNo: 1
+            self.registerAdd(TestModel.name, new AreaDbModel(1, {
+                id: '1',
             }));
 
             const bulks = Reflect.get(self, 'm_Bulk');
@@ -108,11 +102,8 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerRemove(TestModel.name, Object.assign(new AreaDbModel(), {
-                entry: {
-                    id: '1',
-                },
-                areaNo: 1
+            self.registerRemove(TestModel.name, new AreaDbModel(1, {
+                id: '1',
             }));
 
             const bulks = Reflect.get(self, 'm_Bulk');
@@ -141,11 +132,8 @@ describe('src/area-unit-of-work.ts', () => {
             const globalDbFactoryMock = new Mock<DbFactoryBase>();
             const self = new Self(dbFactoryMock.actual, globalDbFactoryMock.actual);
 
-            self.registerSave(TestModel.name, Object.assign(new AreaDbModel(), {
-                entry: {
-                    id: '1',
-                },
-                areaNo: 1
+            self.registerSave(TestModel.name, new AreaDbModel(1, {
+                id: '1',
             }));
 
             const bulks = Reflect.get(self, 'm_Bulk');

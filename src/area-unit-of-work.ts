@@ -23,11 +23,12 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
         try {
             const entries = Object.entries(this.m_Bulk);
             this.m_Bulk = {};
-            for (const [areaNo, opActions] of entries) {
+            for (const [areaNo_, opActions] of entries) {
                 let uow: IUnitOfWorkRepository;
+                const areaNo = Number(areaNo_);
 
                 if (areaNo) {
-                    const dbFactory = await this.m_DbFactory.getAreaDbFactory(Number(areaNo));
+                    const dbFactory = await this.m_DbFactory.getAreaDbFactory(areaNo);
                     uow = dbFactory.uow() as IUnitOfWorkRepository;
                 } else {
                     uow = this.m_GlobalDbFactory.uow() as IUnitOfWorkRepository;
@@ -47,11 +48,8 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
     }
 
     public registerAdd(model: string, entry: AreaDbModel) {
-        const isArea = entry instanceof AreaDbModel;
-        const areaNo = isArea ? entry.areaNo : 0;
-        this.m_Bulk[areaNo] ??= [];
-        this.m_Bulk[areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerAdd(model, isArea ? entry.entry : entry);
+        this.register(entry, (uow, entry) => {
+            uow.registerAdd(model, entry.entry);
         });
     }
 
@@ -67,20 +65,22 @@ export class AreaUnitOfWork implements IUnitOfWorkRepository {
     }
 
     public registerRemove(model: string, entry: AreaDbModel) {
-        const isArea = entry instanceof AreaDbModel;
-        const areaNo = isArea ? entry.areaNo : 0;
-        this.m_Bulk[areaNo] ??= [];
-        this.m_Bulk[areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerRemove(model, isArea ? entry.entry : entry);
+        this.register(entry, (uow, entry) => {
+            uow.registerRemove(model, entry.entry);
         });
     }
 
     public registerSave(model: string, entry: AreaDbModel) {
-        const isArea = entry instanceof AreaDbModel;
-        const areaNo = isArea ? entry.areaNo : 0;
-        this.m_Bulk[areaNo] ??= [];
-        this.m_Bulk[areaNo].push((uow: IUnitOfWorkRepository) => {
-            uow.registerSave(model, isArea ? entry.entry : entry);
+        this.register(entry, (uow, entry) => {
+            uow.registerSave(model, entry.entry);
+        });
+    }
+
+    private register(entry: AreaDbModel, action: (uow: IUnitOfWorkRepository, entry: AreaDbModel) => void) {
+        entry = entry instanceof AreaDbModel ? entry : new AreaDbModel(0, entry);
+        this.m_Bulk[entry.areaNo] ??= [];
+        this.m_Bulk[entry.areaNo].push((uow: IUnitOfWorkRepository) => {
+            action(uow, entry);
         });
     }
 }
