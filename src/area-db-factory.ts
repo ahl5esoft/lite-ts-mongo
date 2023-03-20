@@ -1,14 +1,17 @@
-import { DbFactoryBase, DbOption, DbModel, DbRepository } from 'lite-ts-db';
+import { DbFactoryBase, DbOption, DbModel, DbRepository, AreaDbFactoryBase, AreaUnitOfWork } from 'lite-ts-db';
 import { EnumFactoryBase } from 'lite-ts-enum';
 
 import { AreaData } from './area-data';
-import { AreaUnitOfWork } from './area-unit-of-work';
 import { MongoDbFactory } from './db-factory';
 
-export class MongoAreaDbFactory extends DbFactoryBase {
+export class MongoAreaDbFactory extends AreaDbFactoryBase {
     private m_AllDbFactory: Promise<{
         [areaNo: number]: DbFactoryBase;
     }>;
+
+    public get pool() {
+        return (this.m_GlobalDbFactory as MongoDbFactory).pool;
+    }
 
     public constructor(
         private m_GlobalDbFactory: DbFactoryBase,
@@ -31,7 +34,7 @@ export class MongoAreaDbFactory extends DbFactoryBase {
     }
 
     public uow() {
-        return new AreaUnitOfWork(this, this.m_GlobalDbFactory as MongoDbFactory);
+        return new AreaUnitOfWork(this, this.m_GlobalDbFactory);
     }
 
     public async getAreaDbFactory(areaNo: number) {
