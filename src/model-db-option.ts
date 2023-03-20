@@ -1,7 +1,6 @@
-import { DbOption, DbRepository } from 'lite-ts-db';
+import { AreaDbQuery, DbOption, DbRepository } from 'lite-ts-db';
 
 import { MongoAreaDbFactory } from './area-db-factory';
-import { AreaDbQuery } from './area-db-query';
 import { MongoDbFactory } from './db-factory';
 import { DbQuery } from './db-query';
 
@@ -10,11 +9,11 @@ export function modelDbOption(model: any): DbOption {
         const dbRepo = dbRepo_ as DbRepository<any>;
         dbRepo.model = typeof model == 'string' ? model : model.ctor ?? model.name;
         dbRepo.createQueryFunc(() => {
-            const mongoAreaDbFactory = dbFactory as MongoAreaDbFactory;
-            if (dbRepo.areaNo && mongoAreaDbFactory.getAreaDbFactory) {
+            const isArea = dbFactory instanceof MongoAreaDbFactory;
+            if (isArea && dbRepo.areaNo) {
                 return new AreaDbQuery(
                     dbRepo.areaNo,
-                    mongoAreaDbFactory,
+                    dbFactory,
                     dbRepo.dbOptions
                 );
             }

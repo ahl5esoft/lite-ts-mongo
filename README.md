@@ -57,8 +57,8 @@ async function main() {
 
 ### 多区服使用
 ```typescript
-import { DbModel } from 'lite-ts-db';
-import { MongoAreaDbFactory, MongoDbFactory, modelDbOption, areaDbOption, AreaData } from 'lite-ts-mongo';
+import { DbModel, areaDbOption } from 'lite-ts-db';
+import { MongoAreaDbFactory, MongoDbFactory, modelDbOption, AreaData } from 'lite-ts-mongo';
 
 class TestModel extends DbModel {}
 

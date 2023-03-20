@@ -23,6 +23,7 @@ export class MongoDbFactory extends DbFactoryBase {
         const dbRepository = new DbRepository<T>(
             this.uow(),
         );
+        dbRepository.dbOptions = dbOptions;
         for (const r of dbOptions)
             r(this, dbRepository);
         return dbRepository;
