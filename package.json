@@ -4,8 +4,9 @@
         "url": "https://github.com/ahl5esoft/lite-ts-mongo/issues"
     },
     "dependencies": {
+        "lite-ts-config": "^1.1.1",
         "lite-ts-db": "^1.8.1",
-        "lite-ts-enum": "^1.2.0",
+        "lite-ts-enum": "^1.6.0",
         "mongodb": "^4.8.1"
     },
     "devDependencies": {
