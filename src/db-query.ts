@@ -1,5 +1,5 @@
 import { IDbQuery, DbQueryOption } from 'lite-ts-db';
-import { Filter } from 'mongodb';
+import { AbstractCursor, Filter } from 'mongodb';
 
 import { DbPool } from './db-pool';
 import { toEntries } from './helper';
@@ -18,22 +18,29 @@ export class DbQuery<T> implements IDbQuery<T> {
     }
 
     public async toArray(v?: DbQueryOption<Filter<any>>) {
-        this.setID(v?.where);
-
+        let cursor: AbstractCursor;
         const db = await this.m_Pool.db;
-        const cursor = db.collection(this.m_Table).find(v?.where);
+        if (Array.isArray(v?.where)) {
+            cursor = db.collection(this.m_Table).aggregate(v.where);
+        } else {
+            this.setID(v?.where);
 
-        const sorts = [];
-        this.appendSort(1, v?.order, sorts);
-        this.appendSort(-1, v?.orderByDesc, sorts);
-        if (sorts.length)
-            cursor.sort(sorts);
+            const findCursor = db.collection(this.m_Table).find(v?.where);
 
-        if (v?.skip > 0)
-            cursor.skip(v.skip);
+            const sorts = [];
+            this.appendSort(1, v?.order, sorts);
+            this.appendSort(-1, v?.orderByDesc, sorts);
+            if (sorts.length)
+                findCursor.sort(sorts);
 
-        if (v?.take > 0)
-            cursor.limit(v.take);
+            if (v?.skip > 0)
+                findCursor.skip(v.skip);
+
+            if (v?.take > 0)
+                findCursor.limit(v.take);
+
+            cursor = findCursor;
+        }
 
         const rows = await cursor.toArray();
         return toEntries(rows);
