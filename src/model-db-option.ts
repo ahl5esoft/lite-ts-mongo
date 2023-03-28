@@ -8,7 +8,7 @@ export function modelDbOption(model: any): DbOption {
     return (dbFactory, dbRepo_) => {
         const dbRepo = dbRepo_ as DbRepository<any>;
         dbRepo.model = typeof model == 'string' ? model : model.ctor ?? model.name;
-        dbRepo.createQueryFunc(() => {
+        dbRepo.createQueryFunc = () => {
             const isArea = dbFactory instanceof MongoAreaDbFactory;
             if (isArea && dbRepo.areaNo) {
                 return new AreaDbQuery(
@@ -22,6 +22,6 @@ export function modelDbOption(model: any): DbOption {
                 (dbFactory as MongoDbFactory).pool,
                 dbRepo.model
             );
-        });
+        };
     };
 }
