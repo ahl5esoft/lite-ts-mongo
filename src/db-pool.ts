@@ -1,6 +1,8 @@
 import { Db, MongoClient } from 'mongodb';
 
 export class DbPool {
+    public static excludeDbNames = ['test', 'admin'];
+
     private m_Client: Promise<MongoClient>;
     public get client() {
         this.m_Client ??= new MongoClient(this.m_Url).connect();
@@ -12,13 +14,14 @@ export class DbPool {
         this.m_Db ??= new Promise<Db>(async (s, f) => {
             try {
                 const client = await this.client;
+                const ok = DbPool.excludeDbNames.includes(client.options.dbName);
                 s(
-                    client.db(this.m_Name)
+                    client.db(ok ? this.m_Name : client.options.dbName)
                 );
             } catch (ex) {
                 f(ex);
             }
-        })
+        });
         return this.m_Db;
     }
 
