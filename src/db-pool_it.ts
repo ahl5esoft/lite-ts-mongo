@@ -27,5 +27,11 @@ describe('src/pool.ts', () => {
             }, 0);
             strictEqual(count, 0);
         });
+
+        it('uri 带数据库名称', async () => {
+            const self = new Self('lite-ts-mongo_it', 'mongodb://localhost:27017/framework-prop');
+            const db = await self.db;
+            strictEqual(db.databaseName, 'framework-prop');
+        });
     });
 });
