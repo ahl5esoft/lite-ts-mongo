@@ -1,4 +1,4 @@
-# ![Version](https://img.shields.io/badge/version-1.11.1-green.svg)
+# ![Version](https://img.shields.io/badge/version-1.12.1-green.svg)
 
 支持 mongo 4.x 以上版本
 
