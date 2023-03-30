@@ -5,6 +5,5 @@ export * from './db-factory';
 export * from './enum';
 export * from './load-config-handler';
 export * from './load-enum-handler';
-export * from './maintain-enum';
 export * from './model-db-option';
 export * from './string-generator';

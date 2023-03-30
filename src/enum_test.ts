@@ -3,12 +3,12 @@ import { EnumItem } from 'lite-ts-enum';
 import { Mock, mockAny } from 'lite-ts-mock';
 import { RedisBase } from 'lite-ts-redis';
 
-import { MaintainEnum as Self } from './maintain-enum';
+import { MongoEnum as Self } from './enum';
 
 describe('src/enum.ts', () => {
     describe('save', () => {
         // 新增但不备份
-        it.only('add but not backup', async () => {
+        it('add but not backup', async () => {
             const name = 'aaa';
             const areaNo = 10001;
             const mockDbFactory = new Mock<DbFactoryBase>();
