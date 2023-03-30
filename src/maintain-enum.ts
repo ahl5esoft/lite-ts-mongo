@@ -5,7 +5,7 @@ import { RedisBase } from 'lite-ts-redis';
 import { Enum } from './enum';
 import { modelDbOption } from './model-db-option';
 
-export class DbEnum<T extends EnumItem> {
+export class MaintainEnum<T extends EnumItem> {
     public constructor(
         public name: string,
         private m_AreaNo: number,

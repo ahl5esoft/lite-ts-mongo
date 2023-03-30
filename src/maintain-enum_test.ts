@@ -3,7 +3,7 @@ import { EnumItem } from 'lite-ts-enum';
 import { Mock, mockAny } from 'lite-ts-mock';
 import { RedisBase } from 'lite-ts-redis';
 
-import { DbEnum as Self } from './db-enum';
+import { MaintainEnum as Self } from './maintain-enum';
 
 describe('src/enum.ts', () => {
     describe('save', () => {
