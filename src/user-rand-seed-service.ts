@@ -1,9 +1,12 @@
-import { areaDbOption, DbFactoryBase, IRandSeedService, IUnitOfWork, uowDbOption } from 'lite-ts-db';
+import { areaDbOption, DbFactoryBase, DbModel, IRandSeedService, IUnitOfWork, uowDbOption } from 'lite-ts-db';
 
 import { modelDbOption } from './model-db-option';
-import { UserRandSeed } from './user-rand-seed';
 
-export class MongoRandSeedService implements IRandSeedService {
+export class UserRandSeed extends DbModel {
+    public seed: { [scene: string]: string; };
+}
+
+export class MongoUserRandSeedService implements IRandSeedService {
     private m_Entry: Promise<UserRandSeed>;
 
     public constructor(
@@ -44,11 +47,6 @@ export class MongoRandSeedService implements IRandSeedService {
         return seed;
     }
 
-    /**
-     * 初始化
-     * 
-     * @param uow 工作单元
-     */
     private async findSeeds(uow: IUnitOfWork) {
         const entry = await this.getEntry(uow);
 

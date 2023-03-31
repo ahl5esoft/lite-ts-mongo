@@ -2,10 +2,9 @@ import { strictEqual } from 'assert';
 import { DbFactoryBase, IDbQuery, IDbRepository } from 'lite-ts-db';
 import { Mock, mockAny } from 'lite-ts-mock';
 
-import { MongoRandSeedService as Self } from './rand-seed-service';
-import { UserRandSeed } from './user-rand-seed';
+import { MongoUserRandSeedService as Self, UserRandSeed } from './user-rand-seed-service';
 
-describe('src/rand-seed-service.ts', () => {
+describe('src/user-rand-seed-service.ts', () => {
     describe('.get(uow: IUnitOfWork, len: number, offset?: number)', () => {
         it('ok', async () => {
             const dbFactoryMock = new Mock<DbFactoryBase>();

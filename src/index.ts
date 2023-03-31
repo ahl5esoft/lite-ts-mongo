@@ -6,6 +6,5 @@ export * from './enum';
 export * from './load-config-handler';
 export * from './load-enum-handler';
 export * from './model-db-option';
-export * from './rand-seed-service';
 export * from './string-generator';
-export * from './user-rand-seed';
+export * from './user-rand-seed-service';
