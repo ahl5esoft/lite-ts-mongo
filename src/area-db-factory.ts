@@ -1,16 +1,13 @@
 import { DbFactoryBase, DbOption, DbModel, DbRepository, AreaDbFactoryBase, AreaUnitOfWork } from 'lite-ts-db';
 import { EnumFactoryBase } from 'lite-ts-enum';
-import { AesCrypto, CryptoBase } from 'lite-ts-crypto';
 
 import { AreaData } from './area-data';
 import { MongoDbFactory } from './db-factory';
-import { EncryptAlgorithmType } from './encrypt-algorithm-type';
-import { EncryptData } from './encrypt-data';
 
 export class MongoAreaDbFactory extends AreaDbFactoryBase {
-    private m_AllDbFactory: Promise<{ [areaNo: number]: DbFactoryBase; }>;
-
-    private m_AllCrypto: Promise<{ [no: number]: CryptoBase; }>;
+    private m_AllDbFactory: Promise<{
+        [areaNo: number]: DbFactoryBase;
+    }>;
 
     public get pool() {
         return (this.m_GlobalDbFactory as MongoDbFactory).pool;
@@ -46,24 +43,14 @@ export class MongoAreaDbFactory extends AreaDbFactoryBase {
         }>(async (s, f) => {
             try {
                 const items = await this.m_EnumFactory.build<AreaData>(AreaData).items;
-                const memo = {};
-                for (const r of items) {
-                    const connection = r.connectionString[this.m_Name];
-                    if (connection) {
-                        let mongoUrl: string;
+                s(
+                    items.reduce((memo, r) => {
+                        if (r.connectionString[this.m_Name])
+                            memo[r.value] = new MongoDbFactory(false, this.m_Name, r.connectionString[this.m_Name]);
 
-                        if (typeof connection == 'string') {
-                            mongoUrl = connection;
-                        } else {
-                            const crypto = await this.getCrypto(connection.encryptNo);
-                            mongoUrl = await crypto.decrypt(connection.ciphertext);
-                        }
-
-                        memo[r.value] = new MongoDbFactory(false, this.m_Name, mongoUrl);
-                    }
-                }
-
-                s(memo);
+                        return memo;
+                    }, {})
+                );
             } catch (ex) {
                 f(ex);
             }
@@ -74,28 +61,5 @@ export class MongoAreaDbFactory extends AreaDbFactoryBase {
             throw new Error(`缺少区服配置 ${areaNo}[${this.m_Name}]`);
 
         return allDbFactory[areaNo];
-    }
-
-    private async getCrypto(no: number) {
-        this.m_AllCrypto ??= new Promise<{ [no: number]: CryptoBase; }>(async (s, f) => {
-            try {
-                const items = await this.m_EnumFactory.build(EncryptData).items;
-                s(
-                    items.reduce((memo, r) => {
-                        if (r.algorithm == EncryptAlgorithmType.aes)
-                            memo[r.value] = new AesCrypto(r.key);
-                        return memo;
-                    }, {})
-                );
-            } catch (ex) {
-                f(ex);
-            }
-        });
-
-        const allCrypto = await this.m_AllCrypto;
-        if (!allCrypto[no])
-            throw new Error(`缺少 ${EncryptData.name}[${no}]`);
-
-        return allCrypto[no];
     }
 }

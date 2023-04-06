@@ -56,7 +56,7 @@ export class MongoUserRandSeedService implements IRandSeedService {
                 entry.seed[this.m_Scene] += Math.random().toString(10).substring(2);
 
             await this.m_DbFactory.db<UserRandSeed>(
-                modelDbOption(global.UserRandSeed),
+                modelDbOption(UserRandSeed),
                 uowDbOption(uow),
                 areaDbOption(this.m_AreaNo)
             ).save(entry);
@@ -69,7 +69,7 @@ export class MongoUserRandSeedService implements IRandSeedService {
         this.m_Entry ??= new Promise<UserRandSeed>(async (s, f) => {
             try {
                 const db = this.m_DbFactory.db<UserRandSeed>(
-                    modelDbOption(global.UserRandSeed),
+                    modelDbOption(UserRandSeed),
                     uowDbOption(uow),
                     areaDbOption(this.m_AreaNo)
                 );
