@@ -5,6 +5,9 @@ export class AreaData extends EnumItem {
      * 数据库连接信息
      */
     public connectionString: {
-        [app: string]: string;
+        [app: string]: string | {
+            ciphertext: string;
+            encryptNo: number;
+        };
     };
 }

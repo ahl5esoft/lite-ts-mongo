@@ -2,6 +2,8 @@ export * from './area-data';
 export * from './area-db-factory';
 export * from './config';
 export * from './db-factory';
+export * from './encrypt-algorithm-type';
+export * from './encrypt-data';
 export * from './enum';
 export * from './load-config-handler';
 export * from './load-enum-handler';
