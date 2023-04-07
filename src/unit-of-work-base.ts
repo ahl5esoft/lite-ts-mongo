@@ -1,4 +1,4 @@
-import { IUnitOfWorkRepository } from 'lite-ts-db';
+import { DbModel, IUnitOfWorkRepository } from 'lite-ts-db';
 import { AnyBulkWriteOperation, BulkWriteOptions, ClientSession } from 'mongodb';
 
 import { DbPool } from './db-pool';
@@ -13,7 +13,13 @@ export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
      */
     private m_AfterAction: { [key: string]: () => Promise<void>; } = {};
 
-    private m_Bulk: { [model: string]: AnyBulkWriteOperation[]; } = {};
+    private m_Bulks: {
+        [model: string]: {
+            add: DbModel[];
+            remove: DbModel[];
+            save: DbModel[];
+        };
+    } = {};
 
     public constructor(
         protected blukWriteOptions: BulkWriteOptions,
@@ -25,11 +31,10 @@ export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
      */
     public async commit() {
         try {
-            const bulks = Object.entries(this.m_Bulk);
+            const bulks = await this.getBulks(this.m_Bulks);
+            this.m_Bulks = {};
             if (!bulks.length)
                 return;
-
-            this.m_Bulk = {};
 
             const client = await this.pool.client;
             const session = client.startSession({
@@ -50,12 +55,12 @@ export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
     }
 
     public registerAdd(model: string, entry: any) {
-        this.m_Bulk[model] ??= [];
-        this.m_Bulk[model].push({
-            insertOne: {
-                document: toDoc(entry)
-            }
-        });
+        this.m_Bulks[model] ??= {
+            add: [],
+            remove: [],
+            save: []
+        };
+        this.m_Bulks[model].add.push(entry);
     }
 
     /**
@@ -70,38 +75,76 @@ export abstract class UnitOfWorkBase implements IUnitOfWorkRepository {
     }
 
     public registerRemove(model: string, entry: any) {
-        this.m_Bulk[model] ??= [];
-        this.m_Bulk[model].push({
-            deleteOne: {
-                filter: {
-                    _id: entry.id,
-                }
-            }
-        });
+        this.m_Bulks[model] ??= {
+            add: [],
+            remove: [],
+            save: []
+        };
+        this.m_Bulks[model].remove.push(entry);
     }
 
     public registerSave(model: string, entry: any) {
-        this.m_Bulk[model] ??= [];
-
-        const doc = toDoc(entry);
-        const index = this.m_Bulk[model].findIndex(r => {
-            return (r as any).updateOne?.filter?._id == doc._id;
+        this.m_Bulks[model] ??= {
+            add: [],
+            remove: [],
+            save: []
+        };
+        const index = this.m_Bulks[model].save.findIndex(r => {
+            return r.id == entry.id;
         });
         if (index != -1)
-            this.m_Bulk[model].splice(index, 1);
+            this.m_Bulks[model].save.splice(index, 1);
 
-        delete doc._id;
-        this.m_Bulk[model].push({
-            updateOne: {
-                filter: {
-                    _id: entry.id,
-                },
-                update: {
-                    $set: doc,
-                }
-            }
-        });
+        this.m_Bulks[model].save.push(entry);
     }
+
+    protected async getBulks(bulk: {
+        [model: string]: {
+            add: DbModel[];
+            remove: DbModel[];
+            save: DbModel[];
+        };
+    }): Promise<[string, AnyBulkWriteOperation[]][]> {
+        const bulkEntries = Object.entries(bulk);
+        const bulks = [];
+        for (const [model, v] of bulkEntries) {
+            const data = [];
+            for (const r of v.add) {
+                data.push({
+                    insertOne: {
+                        document: toDoc(r)
+                    }
+                });
+            }
+
+            for (const r of v.remove) {
+                data.push({
+                    deleteOne: {
+                        filter: {
+                            _id: r.id
+                        }
+                    }
+                });
+            }
+
+            for (const r of v.save) {
+                const doc = toDoc(r);
+                delete doc._id;
+                data.push({
+                    updateOne: {
+                        filter: {
+                            _id: r.id,
+                        },
+                        update: {
+                            $set: doc,
+                        }
+                    }
+                });
+            }
+            bulks.push([model, data]);
+        }
+        return bulks;
+    };
 
     protected abstract commitWithSession(session: ClientSession, bulks: [string, AnyBulkWriteOperation[]][]): Promise<void>;
 }
