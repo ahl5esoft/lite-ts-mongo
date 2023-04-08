@@ -1,6 +1,4 @@
 export * from './area-data';
-export * from './area-db-factory';
-export * from './crypto-db-factory';
 export * from './config';
 export * from './db-factory';
 export * from './enum';
