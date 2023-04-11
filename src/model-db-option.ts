@@ -9,7 +9,7 @@ export function modelDbOption(model: any): DbOption {
         dbRepo.model = typeof model == 'string' ? model : model.ctor ?? model.name;
         dbRepo.createQueryFunc = () => {
             const isArea = dbFactory instanceof AreaDbFactory;
-            if (isArea || dbRepo.areaNo) {
+            if (isArea) {
                 return new AreaDbQuery(
                     dbFactory as AreaDbFactory,
                     dbRepo.areaNo,
