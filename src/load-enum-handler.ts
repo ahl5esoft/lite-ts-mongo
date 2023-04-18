@@ -1,5 +1,5 @@
 import { areaDbOption, DbFactoryBase } from 'lite-ts-db';
-import { LoadEnumHandleOption, LoadEnumHandlerBase } from 'lite-ts-enum';
+import { LoadEnumHandlerContext, LoadEnumHandlerBase } from 'lite-ts-enum';
 
 import { Enum } from './enum';
 import { modelDbOption } from './model-db-option';
@@ -11,7 +11,7 @@ export class LoadMongoEnumHandler extends LoadEnumHandlerBase {
         super();
     }
 
-    public async handle(opt: LoadEnumHandleOption) {
+    public async handle(opt: LoadEnumHandlerContext) {
         const entries = await this.m_DbFactory.db<Enum>(
             modelDbOption(Enum),
             areaDbOption(opt.areaNo)
