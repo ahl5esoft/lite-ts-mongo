@@ -1,5 +1,5 @@
 import { strictEqual } from 'assert';
-import { LoadConfigHandleOption } from 'lite-ts-config';
+import { ConfigLoadHandlerContext } from 'lite-ts-config';
 import { DbFactoryBase, IDbQuery, IDbRepository } from 'lite-ts-db';
 import { Mock, mockAny } from 'lite-ts-mock';
 
@@ -7,7 +7,7 @@ import { Config } from './config';
 import { MongoLoadConfigHandler as Self } from './load-config-handler';
 
 describe('src/load-config-handler.ts', () => {
-    describe('.handle(opt: LoadConfigHandleOption)', () => {
+    describe('.handle(ctx: ConfigLoadHandlerContext)', () => {
         it('ok', async () => {
             const mockDbFactory = new Mock<DbFactoryBase>();
             const self = new Self(mockDbFactory.actual);
@@ -38,7 +38,7 @@ describe('src/load-config-handler.ts', () => {
                 ]
             );
 
-            const opt: LoadConfigHandleOption = {
+            const opt: ConfigLoadHandlerContext = {
                 name: 'tt',
                 areaNo: 0,
             };
