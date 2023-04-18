@@ -4,7 +4,7 @@ import { DbFactoryBase, IDbQuery, IDbRepository } from 'lite-ts-db';
 import { Mock, mockAny } from 'lite-ts-mock';
 
 import { Config } from './config';
-import { LoadMongoConfigHandler as Self } from './load-config-handler';
+import { MongoLoadConfigHandler as Self } from './load-config-handler';
 
 describe('src/load-config-handler.ts', () => {
     describe('.handle(opt: LoadConfigHandleOption)', () => {

@@ -78,7 +78,11 @@ export class MongoUserRandSeedService implements IRandSeedService {
                         id: this.m_UserID
                     }
                 });
-                if (!entries.length) {
+                if (entries.length) {
+                    for (let i = 1; i < entries.length; i++) {
+                        await db.remove(entries[i]);
+                    }
+                } else {
                     entries.push({
                         id: this.m_UserID,
                         seed: {}

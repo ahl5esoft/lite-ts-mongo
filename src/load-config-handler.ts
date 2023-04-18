@@ -7,7 +7,7 @@ class Config extends DbModel {
     public items: any;
 }
 
-export class LoadMongoConfigHandler extends LoadConfigHandlerBase {
+export class MongoLoadConfigHandler extends LoadConfigHandlerBase {
     public constructor(
         private m_DbFactory: DbFactoryBase,
     ) {
