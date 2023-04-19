@@ -1,5 +1,5 @@
+import { ConfigLoadHandlerBase, ConfigLoadHandlerContext } from 'lite-ts-config';
 import { areaDbOption, DbFactoryBase, DbModel } from 'lite-ts-db';
-import { LoadConfigHandleOption, LoadConfigHandlerBase } from 'lite-ts-config';
 
 import { modelDbOption } from './model-db-option';
 
@@ -7,25 +7,25 @@ class Config extends DbModel {
     public items: any;
 }
 
-export class MongoLoadConfigHandler extends LoadConfigHandlerBase {
+export class MongoLoadConfigHandler extends ConfigLoadHandlerBase {
     public constructor(
         private m_DbFactory: DbFactoryBase,
     ) {
         super();
     }
 
-    public async handle(opt: LoadConfigHandleOption) {
+    public async handle(ctx: ConfigLoadHandlerContext) {
         const entries = await this.m_DbFactory.db<Config>(
             modelDbOption(Config),
-            areaDbOption(opt.areaNo)
+            areaDbOption(ctx.areaNo)
         ).query().toArray({
             where: {
-                id: opt.name,
+                id: ctx.name,
             }
         });
         if (!entries.length)
             return;
 
-        opt.res = entries[0].items;
+        ctx.res = entries[0].items;
     }
 }
