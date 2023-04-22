@@ -1,17 +1,17 @@
 import { areaDbOption, DbFactoryBase } from 'lite-ts-db';
-import { LoadEnumHandlerBase, LoadEnumHandlerContext } from 'lite-ts-enum';
+import { EnumLoadHandlerBase, EnumLoadHandlerContext } from 'lite-ts-enum';
 
 import { Enum } from './enum';
 import { modelDbOption } from './model-db-option';
 
-export class MongoLoadEnumHandler extends LoadEnumHandlerBase {
+export class MongoEnumLoadHandler extends EnumLoadHandlerBase {
     public constructor(
         private m_DbFactory: DbFactoryBase,
     ) {
         super();
     }
 
-    public async handle(ctx: LoadEnumHandlerContext) {
+    public async handle(ctx: EnumLoadHandlerContext) {
         const entries = await this.m_DbFactory.db<Enum>(
             modelDbOption(Enum),
             areaDbOption(ctx.areaNo)

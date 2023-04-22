@@ -3,10 +3,10 @@ import { DbFactoryBase, IDbQuery, IDbRepository } from 'lite-ts-db';
 import { Mock, mockAny } from 'lite-ts-mock';
 
 import { Enum } from './enum';
-import { MongoLoadEnumHandler as Self } from './load-enum-handler';
+import { MongoEnumLoadHandler as Self } from './enum-load-handler';
 
-describe('src/load-enum-handler.ts', () => {
-    describe('.handle(opt: LoadEnumHandleOption)', () => {
+describe('src/enum-load-handler.ts', () => {
+    describe('.handle(ctx: EnumLoadHandlerContext))', () => {
         it('ok', async () => {
             const mockDbFactory = new Mock<DbFactoryBase>();
             const self = new Self(mockDbFactory.actual);
