@@ -7,7 +7,7 @@
         "lite-ts-config": "^2.1.1",
         "lite-ts-crypto": "^1.1.0",
         "lite-ts-db": "^1.10.4",
-        "lite-ts-enum": "^2.10.1",
+        "lite-ts-enum": "^3.11.1",
         "lite-ts-math": "^1.0.0",
         "mongodb": "^4.8.1"
     },
