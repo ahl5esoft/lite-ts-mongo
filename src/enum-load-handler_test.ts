@@ -38,6 +38,8 @@ describe('src/enum-load-handler.ts', () => {
             );
 
             const opt = {
+                app: '',
+                areaNo: 0,
                 enum: {
                     name: 'tt'
                 } as any,
